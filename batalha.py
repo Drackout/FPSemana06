@@ -14,33 +14,60 @@ class Personagem:
         return f"{self.nome} {self.vida}"
 
 class Guerreiro(Personagem):
-    pass
+    def __init__(self, nome, vida, ataque):
+        super().__init__(nome, vida, ataque)
+
+    def especial(self, inimigo):
+        SpecialDmg = self.ataque+15
+        inimigo.vida -= SpecialDmg
+        print(f"{self.nome} usa Golpe Poderoso em {inimigo.nome} e Causa {SpecialDmg} de Dano!")
+
 
 class Mago(Personagem):
-    pass
+    def __init__(self, nome, vida, ataque):
+        super().__init__(nome, vida, ataque)
+
+    def especial(self):
+        Cura = 25
+        self.vida += Cura
+        print(f"{self.nome} usa Cura e Ganha {Cura} Pontos de Vida!")
 
 class Arqueiro(Personagem):
-    pass
+    def __init__(self, nome, vida, ataque):
+        super().__init__(nome, vida, ataque)
+
+    def especial(self, inimigos):
+        SpecialDmg = 15
+        for inimigo in inimigos:
+            if(inimigo == self):
+                pass
+            else:
+                inimigo.vida -= SpecialDmg
+        print(f"{self.nome} usa Chuva de Flechas e Causa {SpecialDmg} de Dano a Todos os Inimigos!")
+        
 
 def importar_personagens(caminho):
-    """
-        Função que importa personagens a partir de um ficheiro JSON.
-        O ficheiro contém uma lista de personagens com informações de nome, vida, ataque e classe.
-        - caminho: Caminho para o ficheiro JSON que contém os dados dos personagens.
-        Retorna:
-        - lista de personagens.
-        - quantidade total de personagens importados.
-    """
-    pass
+    chars = []
+
+    with open(caminho, 'rt') as ficheiro:
+        data = json.load(ficheiro)
+
+    #print(data)
+
+    for char in data:
+        if char["classe"] == "Guerreiro":
+            chars.append(Guerreiro(char["nome"], char["vida"], char["ataque"]))
+        elif char["classe"] == "Arqueiro":
+            chars.append(Arqueiro(char["nome"], char["vida"], char["ataque"]))
+        elif char["classe"] == "Mago":
+            chars.append(Mago(char["nome"], char["vida"], char["ataque"]))
+
+    return chars, len(chars)
 
 def ordenar_personagens_por_vida(personagens):
-    """
-        Função que ordena a lista de personagens de acordo com os pontos de vida (do menor para o maior).
-        - personagens: Lista de personagens.
-        Retorna:
-        - lista de personagens ordenada por vida.
-    """
-    pass
+    return sorted(personagens, key=lambda char: char.vida)
+    #return personagens
+     
 
 personagens, num_personagens = importar_personagens('personagens.json')
 print(f"{num_personagens} Personagens Entram em Batalha!")
